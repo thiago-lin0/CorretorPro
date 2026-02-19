@@ -206,7 +206,7 @@ export default function GestaoProvasScreen() {
                     <Ionicons name="cloud-download-outline" size={24} color="#003399" style={{ marginRight: 12 }} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handlePrepararEdicao(item)}>
-                    <Ionicons name="pencil-outline" size={22} color="#F59E0B" style={{ marginRight: 12 }} />
+                    <Ionicons name="pencil-outline" size={22} color="#10B981" style={{ marginRight: 12 }} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => { 
                     Alert.alert("Excluir", "Apagar prova?", [

@@ -183,7 +183,7 @@ export default function ConfiguracaoScreen() {
               <TouchableOpacity key={item.id_aluno} style={styles.alunoItem} onPress={() => abrirModalEditarAluno(item)}>
                 <View style={styles.avatar}><Text style={styles.avatarText}>{item.nome_completo[0]}</Text></View>
                 <View style={{ flex: 1 }}><Text style={styles.alunoName}>{item.nome_completo}</Text><Text style={styles.alunoClass}>{item.tb_turma?.serie}º {item.tb_turma?.turma} - {item.tb_turma?.turno}</Text></View>
-                <Ionicons name="pencil-outline" size={16} color="#DDD" />
+                <Ionicons name="pencil-outline" size={16} color="#10B981" />
               </TouchableOpacity>
             ))}
           </View>
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   tabTextActive: { color: '#003399' },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15, alignItems: 'center' },
   sectionTitle: { fontSize: 11, fontWeight: '900', color: '#444' },
-  addBtnText: { color: '#003399', fontSize: 11, fontWeight: '900' },
+  addBtnText: { color: '#10B981', fontSize: 11, fontWeight: '900' },
   card: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#FFF', borderRadius: 20, marginBottom: 10, borderWidth: 1, borderColor: '#F0F5FF' },
   cardTitle: { fontSize: 17, fontWeight: 'bold' },
   cardSub: { fontSize: 13, color: '#AAA' },
