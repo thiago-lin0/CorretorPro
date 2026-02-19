@@ -2,7 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../lib/supabase';
 
 export default function RegisterScreen() {
@@ -12,8 +12,10 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const logoImg = require('../assets/images/logo.png');
+
   async function handleRegister() {
-    // Validação: Agora exige o nome também
+    
     if (!name || !schoolName || !email || !password) {
         return Alert.alert("Atenção", "Por favor, preencha todos os campos.");
     }
@@ -54,6 +56,7 @@ export default function RegisterScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
+          <Image source={logoImg} style={styles.logo} resizeMode="contain" />
           <Text style={styles.title}>Nova Conta</Text>
           <Text style={styles.subtitle}>Cadastre-se para gerenciar suas provas.</Text>
         </View>
@@ -119,6 +122,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F7FA',
+  },
+    logo: { 
+    width: 100, 
+    height: 100,
   },
   scrollContent: {
     flexGrow: 1,

@@ -91,7 +91,7 @@ export default function HomeScreen() {
         <View style={styles.gridContainer}>
           <TouchableOpacity 
             style={styles.squareCard}
-            onPress={() => router.push('/configuracao')}
+            onPress={() => router.push('/turmaEAlunos')}
           >
             <View style={[styles.iconCircle, { backgroundColor: '#E3F2FD' }]}>
               <Ionicons name="people" size={28} color="#2196F3" />
@@ -142,7 +142,10 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         {/* CARD DE RELATÓRIOS */}
-        <TouchableOpacity style={styles.wideCard}>
+        <TouchableOpacity 
+          style={styles.wideCard}
+          onPress={() => router.push('/relatorios')}
+          >
           <View style={styles.wideCardLeft}>
             <View style={[styles.iconCircleSmall, { backgroundColor: '#E8F5E9' }]}>
               <MaterialCommunityIcons name="file-excel" size={24} color="#4CAF50" />
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 30 },
   greeting: { fontSize: 15, color: '#888', fontWeight: '500' },
   title: { fontSize: 26, color: '#003399', fontWeight: '800' },
-  schoolSub: { fontSize: 13, color: '#0070C0', fontWeight: '700', marginTop: 4 },
+  schoolSub: { fontSize: 13, color: '#10B981', fontWeight: '700', marginTop: 4 },
   logoutButton: { backgroundColor: '#FFF', padding: 10, borderRadius: 50, elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5 },
   gridContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
   squareCard: { backgroundColor: '#FFF', width: '48%', paddingVertical: 25, borderRadius: 25, alignItems: 'center', elevation: 4, shadowColor: '#000', shadowOpacity: 0.05 },

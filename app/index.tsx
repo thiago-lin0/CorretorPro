@@ -1,13 +1,15 @@
 // app/index.tsx
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../lib/supabase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const logoImg = require('../assets/images/logo.png');
 
   async function handleLogin() {
     setLoading(true);
@@ -29,8 +31,9 @@ export default function LoginScreen() {
     <View style={styles.container}>
       {/* Cabeçalho / Logo */}
       <View style={styles.header}>
-        <Text style={styles.logoText}>Corretor<Text style={styles.logoBold}>PRO</Text></Text>
-        <Text style={styles.subtitle}>Gestão Inteligente de Provas</Text>
+        <Image source={logoImg} style={styles.logo} resizeMode="contain" />
+        <Text style={styles.logoText}>AVALIADOR<Text style={styles.logoBold}> 360</Text></Text>
+        <Text style={styles.subtitle}>Inteligência de dados para uma educação de resultados.</Text>
       </View>
 
       {/* Formulário */}
@@ -97,6 +100,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
+  logo: { 
+    width: 100, 
+    height: 100,
+  },
   logoText: {
     fontSize: 32,
     color: '#0070C0', 
@@ -104,11 +111,13 @@ const styles = StyleSheet.create({
   },
   logoBold: {
     fontWeight: 'bold',
+    color: '#10B981'
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 10,
+    color: '#334155',
     marginTop: 5,
+    paddingHorizontal: 30,
   },
   form: {
     backgroundColor: '#FFF',
@@ -170,7 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   registerLink: {
-    color: '#0070C0',
+    color: '#10B981',
     fontWeight: 'bold',
     fontSize: 14,
   }
