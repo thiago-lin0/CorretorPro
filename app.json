@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#003399"
     },
     "ios": {
       "bundleIdentifier": "com.thiago.avaliador360",

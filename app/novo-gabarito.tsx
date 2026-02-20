@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 15, fontWeight: 'bold', color: '#1E293B' },
   cardTurma: { fontSize: 12, color: '#64748B', marginTop: 2 },
   actions: { flexDirection: 'row', alignItems: 'center' },
-  fab: { position: 'absolute', bottom: 30, right: 25, backgroundColor: '#003399', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 4 },
+  fab: { position: 'absolute', bottom: 60, right: 25, zIndex: 10, backgroundColor: '#003399', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 4 },
   overlayLoading: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.8)', justifyContent: 'center', alignItems: 'center', zIndex: 999 },
   loadingText: { marginTop: 10, color: '#003399', fontWeight: 'bold' },
   formHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
