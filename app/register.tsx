@@ -2,31 +2,46 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image, // Importado
+  Keyboard // Importado
+  ,
+  KeyboardAvoidingView, // Importado
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity, // Importado
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import { supabase } from '../lib/supabase';
 
 export default function RegisterScreen() {
-  const [name, setName] = useState('');       // <--- NOVO CAMPO: NOME
+  const [name, setName] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const logoImg = require('../assets/images/logo.png');
+
   async function handleRegister() {
-    // Validação: Agora exige o nome também
     if (!name || !schoolName || !email || !password) {
         return Alert.alert("Atenção", "Por favor, preencha todos os campos.");
     }
 
     setLoading(true);
     
-    // Envia o Nome e a Escola nos metadados
     const { error } = await supabase.auth.signUp({
       email: email,
       password: password,
       options: {
         data: {
-          full_name: name,         // <--- ENVIANDO O NOME AQUI
+          full_name: name,
           school_name: schoolName, 
           role: 'admin_escola'
         }
@@ -47,71 +62,83 @@ export default function RegisterScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    // 1. Envolvemos tudo com o KeyboardAvoidingView
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="#333" />
       </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Nova Conta</Text>
-          <Text style={styles.subtitle}>Cadastre-se para gerenciar suas provas.</Text>
-        </View>
+      {/* 2. ScrollView permite rolar os campos quando o teclado sobe */}
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* 3. Permite fechar o teclado clicando fora dos inputs */}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <View style={styles.header}>
+              <Image source={logoImg} style={styles.logo} resizeMode="contain" />
+              <Text style={styles.title}>Nova Conta</Text>
+              <Text style={styles.subtitle}>Cadastre-se para gerenciar suas provas.</Text>
+            </View>
 
-        <View style={styles.form}>
-          
-          {/* CAMPO NOVO: NOME DO PROFESSOR */}
-          <Text style={styles.label}>Seu Nome Completo</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: Ana Souza"
-            value={name}
-            onChangeText={setName}
-            autoCapitalize="words"
-          />
+            <View style={styles.form}>
+              <Text style={styles.label}>Seu Nome Completo</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: Ana Souza"
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="words"
+              />
 
-          <Text style={styles.label}>Nome da Escola</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: Colégio Futuro"
-            value={schoolName}
-            onChangeText={setSchoolName}
-            autoCapitalize="words"
-          />
+              <Text style={styles.label}>Nome da Escola</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: Colégio Futuro"
+                value={schoolName}
+                onChangeText={setSchoolName}
+                autoCapitalize="words"
+              />
 
-          <Text style={styles.label}>E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="diretor@escola.com"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
+              <Text style={styles.label}>E-mail</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="diretor@escola.com"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
 
-          <Text style={styles.label}>Senha</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Crie uma senha forte"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+              <Text style={styles.label}>Senha</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Crie uma senha forte"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
 
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={handleRegister}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#FFF" />
-            ) : (
-              <Text style={styles.buttonText}>CRIAR CONTA</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity 
+                style={styles.button} 
+                onPress={handleRegister}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#FFF" />
+                ) : (
+                  <Text style={styles.buttonText}>CRIAR CONTA</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -120,17 +147,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F7FA',
   },
+  inner: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  logo: { 
+    width: 100, 
+    height: 100,
+  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    paddingTop: 60,
+    paddingTop: 80, // Aumentado para dar espaço ao botão de voltar
+    paddingBottom: 40,
   },
   backButton: {
     position: 'absolute',
     top: 50,
     left: 20,
     zIndex: 10,
+    backgroundColor: '#FFF', // Adicionado para destacar o botão
+    padding: 8,
+    borderRadius: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   header: {
     alignItems: 'center',
@@ -145,6 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 5,
+    textAlign: 'center',
   },
   form: {
     backgroundColor: '#FFF',

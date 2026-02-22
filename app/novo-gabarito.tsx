@@ -34,6 +34,7 @@ export default function GestaoProvasScreen() {
   // Estados do Formulário
   const [idProvaEditando, setIdProvaEditando] = useState<number | null>(null);
   const [nomeProva, setNomeProva] = useState('');
+  const [materia, setMateria] = useState<'MAT' | 'PORT'>('MAT'); 
   const [turmasSelecionadas, setTurmasSelecionadas] = useState<number[]>([]);
   const [qtdQuestoes, setQtdQuestoes] = useState('10'); 
   
@@ -48,7 +49,12 @@ export default function GestaoProvasScreen() {
   const [questaoAlvo, setQuestaoAlvo] = useState<number | null>(null);
 
   const alternativas = ['A', 'B', 'C', 'D'];
-  const listaDescritores = Array.from({ length: 37 }, (_, i) => `D${i + 1}`);
+
+  // Lógica dinâmica de descritores baseada na matéria selecionada
+  const listaDescritores = Array.from(
+    { length: materia === 'MAT' ? 37 : 21 }, 
+    (_, i) => `D${i + 1}`
+  );
 
   useFocusEffect(useCallback(() => { carregarProvas(); }, []));
   useEffect(() => { carregarDadosIniciais(); }, []);
@@ -85,7 +91,7 @@ export default function GestaoProvasScreen() {
     setModalDownloadVisible(false);
     try {
       const downloadUrl = `${API_URL}/gerar-pdf-turma/${idTurma}`;
-      const response = await fetch(downloadUrl); // Pre-fetch para segurar o loading
+      const response = await fetch(downloadUrl); 
       if (!response.ok) throw new Error("Erro ao gerar PDF.");
       await WebBrowser.openBrowserAsync(downloadUrl);
     } catch (error: any) {
@@ -98,6 +104,7 @@ export default function GestaoProvasScreen() {
     try {
       setIdProvaEditando(prova.id_prova);
       setNomeProva(prova.titulo);
+      setMateria(prova.materia || 'MAT'); 
       setQtdQuestoes(prova.qtd_questoes.toString());
       setTurmasSelecionadas(prova.tb_aplicacao_prova.map((v: any) => v.id_turma));
 
@@ -125,23 +132,27 @@ export default function GestaoProvasScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       let id_prova_final = idProvaEditando;
 
+      const payloadProva = { 
+        titulo: nomeProva, 
+        materia: materia, 
+        id_professor: user?.id, 
+        id_escola: escolaId, 
+        qtd_questoes: total 
+      };
+
       if (idProvaEditando) {
-        await supabase.from('tb_prova').update({ titulo: nomeProva, qtd_questoes: total }).eq('id_prova', idProvaEditando);
+        await supabase.from('tb_prova').update(payloadProva).eq('id_prova', idProvaEditando);
         await supabase.from('tb_aplicacao_prova').delete().eq('id_prova', idProvaEditando);
         await supabase.from('tb_questao').delete().eq('id_prova', idProvaEditando);
       } else {
-        const { data: prova, error: errP } = await supabase.from('tb_prova').insert([{
-          titulo: nomeProva, id_professor: user?.id, id_escola: escolaId, qtd_questoes: total
-        }]).select().single();
+        const { data: prova, error: errP } = await supabase.from('tb_prova').insert([payloadProva]).select().single();
         if (errP) throw errP;
         id_prova_final = prova.id_prova;
       }
 
-      // Vínculos
       const vinculos = turmasSelecionadas.map(idT => ({ id_prova: id_prova_final, id_turma: idT }));
       await supabase.from('tb_aplicacao_prova').insert(vinculos);
 
-      // Questões (Gabarito)
       const questoesParaSalvar = Object.keys(respostas).map(num => ({
         id_prova: id_prova_final,
         numero_questao: parseInt(num),
@@ -150,7 +161,6 @@ export default function GestaoProvasScreen() {
       }));
       await supabase.from('tb_questao').insert(questoesParaSalvar);
 
-      // Gerar folhas se for novo
       if (!idProvaEditando) {
         const { data: alunos } = await supabase.from('tb_aluno').select('id_aluno').in('id_turma', turmasSelecionadas);
         if (alunos) {
@@ -169,6 +179,7 @@ export default function GestaoProvasScreen() {
 
   const resetForm = () => { 
     setNomeProva(''); setTurmasSelecionadas([]); setIdProvaEditando(null); 
+    setMateria('MAT'); 
     setRespostas({}); setDescritores({}); setModo('lista'); 
   };
 
@@ -196,18 +207,18 @@ export default function GestaoProvasScreen() {
             data={provas} 
             keyExtractor={i => i.id_prova.toString()} 
             renderItem={({item}) => (
-              <View style={styles.cardLista}>
+              // CARD TRANSFORMADO EM BOTÃO DE EDIÇÃO
+              <TouchableOpacity style={styles.cardLista} onPress={() => handlePrepararEdicao(item)}>
                 <View style={styles.infoBox}>
                   <Text style={styles.cardTitle}>{item.titulo}</Text>
+                  <Text style={styles.cardMateria}>{item.materia === 'MAT' ? '📐 Matemática' : '📚 Português'}</Text>
                   <Text style={styles.cardTurma}>{item.tb_aplicacao_prova?.length || 0} turmas • {item.qtd_questoes} questões</Text>
                 </View>
                 <View style={styles.actions}>
                   <TouchableOpacity onPress={() => { setProvaSelecionadaParaDownload(item); setModalDownloadVisible(true); }}>
-                    <Ionicons name="cloud-download-outline" size={24} color="#003399" style={{ marginRight: 12 }} />
+                    <Ionicons name="cloud-download-outline" size={24} color="#003399" style={{ marginRight: 15 }} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handlePrepararEdicao(item)}>
-                    <Ionicons name="pencil-outline" size={22} color="#F59E0B" style={{ marginRight: 12 }} />
-                  </TouchableOpacity>
+                  
                   <TouchableOpacity onPress={() => { 
                     Alert.alert("Excluir", "Apagar prova?", [
                       { text: "Não" },
@@ -217,7 +228,7 @@ export default function GestaoProvasScreen() {
                     <Ionicons name="trash-outline" size={22} color="#FF3B30" />
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             )} 
             contentContainerStyle={{ padding: 20 }} 
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={carregarProvas}/>}
@@ -233,6 +244,23 @@ export default function GestaoProvasScreen() {
           
           <Text style={styles.label}>Título da Prova</Text>
           <TextInput style={styles.input} value={nomeProva} onChangeText={setNomeProva} placeholder="Ex: Avaliação Bimestral" />
+
+          {/* SELEÇÃO DE MATÉRIA NO FORMULÁRIO */}
+          <Text style={styles.label}>Disciplina</Text>
+          <View style={styles.materiaContainer}>
+            <TouchableOpacity 
+                style={[styles.materiaBtn, materia === 'MAT' && styles.materiaBtnActive]} 
+                onPress={() => { setMateria('MAT'); setDescritores({}); }}
+            >
+                <Text style={[styles.materiaBtnText, materia === 'MAT' && {color: '#FFF'}]}>MATEMÁTICA</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                style={[styles.materiaBtn, materia === 'PORT' && styles.materiaBtnActive]} 
+                onPress={() => { setMateria('PORT'); setDescritores({}); }}
+            >
+                <Text style={[styles.materiaBtnText, materia === 'PORT' && {color: '#FFF'}]}>PORTUGUÊS</Text>
+            </TouchableOpacity>
+          </View>
           
           <Text style={styles.label}>Vincular Turmas</Text>
           <View style={styles.turmasGrid}>
@@ -282,12 +310,12 @@ export default function GestaoProvasScreen() {
         </ScrollView>
       )}
 
-      {/* MODAL DESCRITORES - FECHA AO CLICAR FORA */}
+      {/* MODAL DESCRITORES */}
       <Modal visible={modalDescritorVisible} transparent animationType="slide">
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalDescritorVisible(false)}>
           <View style={styles.modalDescContent}>
             <View style={styles.modalHeaderIndicator} />
-            <Text style={styles.modalTitle}>Selecionar Descritor</Text>
+            <Text style={styles.modalTitle}>Selecionar Descritor ({materia === 'MAT' ? 'Matemática' : 'Português'})</Text>
             <ScrollView contentContainerStyle={styles.descritoresGrid}>
               {listaDescritores.map(d => (
                 <TouchableOpacity key={d} style={styles.descItem} onPress={() => selecionarDescritor(d)}>
@@ -321,9 +349,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   headerLista: { flexDirection: 'row', alignItems: 'center', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#EEE' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#003399', marginLeft: 15 },
-  cardLista: { flexDirection: 'row', backgroundColor: '#FFF', padding: 16, borderRadius: 12, marginBottom: 10, borderWidth: 1, borderColor: '#E2E8F0', alignItems: 'center' },
+  cardLista: { flexDirection: 'row', backgroundColor: '#FFF', padding: 16, borderRadius: 12, marginBottom: 10, borderWidth: 1, borderColor: '#E2E8F0', alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
   infoBox: { flex: 1 },
   cardTitle: { fontSize: 15, fontWeight: 'bold', color: '#1E293B' },
+  cardMateria: { fontSize: 11, color: '#003399', fontWeight: 'bold', marginBottom: 2 },
   cardTurma: { fontSize: 12, color: '#64748B', marginTop: 2 },
   actions: { flexDirection: 'row', alignItems: 'center' },
   fab: { position: 'absolute', bottom: 30, right: 25, backgroundColor: '#003399', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 4 },
@@ -333,11 +362,15 @@ const styles = StyleSheet.create({
   titleForm: { fontSize: 18, fontWeight: 'bold', marginLeft: 15, color: '#1E293B' },
   label: { fontSize: 13, fontWeight: 'bold', color: '#475569', marginBottom: 5 },
   input: { backgroundColor: '#FFF', padding: 10, borderRadius: 8, borderWidth: 1, borderColor: '#DDD', marginBottom: 10 },
+  materiaContainer: { flexDirection: 'row', gap: 10, marginBottom: 15 },
+  materiaBtn: { flex: 1, padding: 12, borderRadius: 10, borderWidth: 1, borderColor: '#DDD', alignItems: 'center', backgroundColor: '#FFF' },
+  materiaBtnActive: { backgroundColor: '#003399', borderColor: '#003399' },
+  materiaBtnText: { fontSize: 12, fontWeight: 'bold', color: '#64748B' },
   turmasGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 10 },
   chip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 15, backgroundColor: '#E2E8F0' },
   chipActive: { backgroundColor: '#003399' },
   chipText: { fontSize: 11, color: '#475569' },
-  gabaritoHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 },
+  gabaritoHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 },
   qtdBox: { flexDirection: 'row', alignItems: 'center' },
   inputQtd: { backgroundColor: '#FFF', width: 45, padding: 5, borderRadius: 6, borderWidth: 1, borderColor: '#DDD', marginLeft: 10, textAlign: 'center' },
   gabaritoCard: { backgroundColor: '#FFF', borderRadius: 12, padding: 10, borderWidth: 1, borderColor: '#E2E8F0', marginTop: 10 },

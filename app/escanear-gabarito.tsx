@@ -13,9 +13,7 @@ import {
     Vibration,
     View
 } from 'react-native';
-import { supabase } from '../lib/supabase';
 
-// --- CONFIGURAÇÃO DA API ---
 const API_URL = process.env.EXPO_PUBLIC_API_URL; 
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -37,10 +35,9 @@ export default function EscanearGabaritoScreen() {
 
     const onCameraReady = () => {
         setIsCameraReady(true);
-        setTimeout(() => setFlash(true), 800); // Delay para estabilizar o flash
+        setTimeout(() => setFlash(true), 800);
     };
 
-   
     if (!permission?.granted) {
         return (
             <View style={styles.containerCenter}>
@@ -73,33 +70,18 @@ export default function EscanearGabaritoScreen() {
                 skipProcessing: false 
             });
 
-
-            const fotoW = foto.width;
-            const fotoH = foto.height;
-            
             const scaleX = foto.width / SCREEN_WIDTH;
             const scaleY = foto.height / SCREEN_HEIGHT;
-
             const MARGEM = 150; 
 
             const originX = Math.max(0, (MASK_X * scaleX) - MARGEM);
             const originY = Math.max(0, (MASK_Y * scaleY) - MARGEM);
-
-            const cropWidth = Math.min(fotoW - originX, (MASK_WIDTH * scaleX) + (MARGEM * 2));
-            const cropHeight = Math.min(fotoH - originY, (MASK_HEIGHT * scaleY) + (MARGEM * 2));
-
-            const cropRegion = {
-              originX: originX,
-              originY: originY,
-              width: cropWidth,
-              height: cropHeight,
-            };
-
-            console.log("Fazendo crop em:", cropRegion);
+            const cropWidth = Math.min(foto.width - originX, (MASK_WIDTH * scaleX) + (MARGEM * 2));
+            const cropHeight = Math.min(foto.height - originY, (MASK_HEIGHT * scaleY) + (MARGEM * 2));
 
             const manipulada = await ImageManipulator.manipulateAsync(
                 foto.uri,
-                [{ crop: cropRegion }, { resize: { height: 1600 } }], 
+                [{ crop: { originX, originY, width: cropWidth, height: cropHeight } }, { resize: { height: 1600 } }], 
                 { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
             );
 
@@ -113,11 +95,9 @@ export default function EscanearGabaritoScreen() {
             const response = await fetch(`${API_URL}/corrigir-prova`, {
                 method: 'POST',
                 body: formData,
-                headers: { 'Accept': 'application/json' },
             });
 
             const resData = await response.json();
-
             if (response.ok && resData.status === "sucesso") {
                 setScannedResult(resData);
             } else {
@@ -131,47 +111,16 @@ export default function EscanearGabaritoScreen() {
         }
     }
 
-    async function handleConfirmar() {
-        if (!scannedResult || !scannedResult.id_folha) {
-            Alert.alert("Erro", "Dados da correção incompletos.");
-            return;
-        }
-        
-        setLoading(true);
-        try {
-            const { error } = await supabase.from('tb_folha_resposta')
-                .update({ 
-                    nota_final: scannedResult.resultado.acertos, 
-                    status: 'CORRIGIDO',
-                    data_correcao: new Date().toISOString()
-                })
-                .eq('id_folha', scannedResult.id_folha);
-            
-            if (error) throw error;
-
-            setScannedResult(null);
-            setIsDetected(false);
-            Alert.alert("Sucesso", "Gabarito salvo com sucesso!");
-            
-        } catch (e: any) {
-            Alert.alert("Falha ao Salvar", e.message);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    
-
     return (
         <View style={styles.container}>
             <CameraView 
                 style={styles.camera} 
                 ref={cameraRef}
                 zoom={0.05}
-                enableTorch={isCameraReady && flash} onCameraReady={onCameraReady}
+                enableTorch={isCameraReady && flash}
+                onCameraReady={onCameraReady}
                 barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
                 onBarcodeScanned={onBarcodeScanned}
-                autofocus="on"
             >
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.btnClose} onPress={() => router.back()}>
@@ -185,12 +134,9 @@ export default function EscanearGabaritoScreen() {
                     </TouchableOpacity>
                 </View>
 
+                {/* VISOR CENTRAL: Agora sem as bordinhas de canto */}
                 <View style={styles.viewfinder}>
                     <View style={[styles.guideFrame, isDetected && styles.frameActive]}>
-                        <View style={[styles.corner, styles.tl, isDetected && styles.cornerActive]} />
-                        <View style={[styles.corner, styles.tr, isDetected && styles.cornerActive]} />
-                        <View style={[styles.corner, styles.bl, isDetected && styles.cornerActive]} />
-                        <View style={[styles.corner, styles.br, isDetected && styles.cornerActive]} />
                         {loading && <ActivityIndicator size="large" color="#4ADE80" />}
                     </View>
                 </View>
@@ -210,7 +156,7 @@ export default function EscanearGabaritoScreen() {
                                 <Text style={styles.cardName}>{scannedResult.aluno}</Text>
                                 <Text style={styles.cardScore}>Acertos: {scannedResult.resultado.acertos}/{scannedResult.resultado.total}</Text>
                             </View>
-                            <TouchableOpacity style={styles.btnSave} onPress={handleConfirmar}>
+                            <TouchableOpacity style={styles.btnSave} onPress={handleCapturar}>
                                 <Text style={styles.btnSaveTxt}>SALVAR NOTA</Text>
                             </TouchableOpacity>
                         </View>
@@ -227,20 +173,26 @@ const styles = StyleSheet.create({
     containerCenter: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#222' },
     btnPermissao: { backgroundColor: '#4ADE80', padding: 15, borderRadius: 8 },
     btnText: { fontWeight: 'bold' },
-    header: { position: 'absolute', top: 50, width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', zIndex: 999,},
+    header: { position: 'absolute', top: 50, width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', zIndex: 999 },
     btnClose: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
     btnFlash: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
     tag: { backgroundColor: 'rgba(0,0,0,0.6)', padding: 10, borderRadius: 10 },
     tagTxt: { color: '#FFF', fontWeight: 'bold', fontSize: 12 },
     viewfinder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    guideFrame: { width: SCREEN_WIDTH * 0.85, aspectRatio: 1240 / 1754, justifyContent: 'center', alignItems: 'center' },
-    frameActive: { backgroundColor: 'rgba(74, 222, 128, 0.1)' },
-    corner: { position: 'absolute', width: 30, height: 30, borderColor: 'rgba(255,255,255,0.3)', borderWidth: 4 },
-    cornerActive: { borderColor: '#4ADE80', borderWidth: 6 },
-    tl: { top: 0, left: 0, borderRightWidth: 0, borderBottomWidth: 0 },
-    tr: { top: 0, right: 0, borderLeftWidth: 0, borderBottomWidth: 0 },
-    bl: { bottom: 0, left: 0, borderRightWidth: 0, borderTopWidth: 0 },
-    br: { bottom: 0, right: 0, borderLeftWidth: 0, borderTopWidth: 0 },
+    guideFrame: { 
+        width: SCREEN_WIDTH * 0.85, 
+        aspectRatio: 1240 / 1754, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.2)', // Linha bem fininha só para guiar
+        borderRadius: 10
+    },
+    frameActive: { 
+        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+        borderColor: '#4ADE80',
+        borderWidth: 2
+    },
     footer: { position: 'absolute', bottom: 40, width: '100%', alignItems: 'center' },
     btnCapture: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center', borderWidth: 4, borderColor: '#FFF' },
     btnDisabled: { opacity: 0.3 },

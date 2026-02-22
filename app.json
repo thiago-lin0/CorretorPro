@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "app-corretor",
-    "slug": "app-corretor",
+    "name": "Avaliador 360",
+    "slug": "Avaliador-360",
     "version": "1.0.0",
+    "scheme": "avaliador360",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
@@ -12,18 +13,31 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.thiago.avaliador360",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "O Avaliador 360 precisa de acesso à câmera para realizar a leitura dos gabaritos.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.thiago.avaliador360",
+      "softwareKeyboardLayoutMode": "resize",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo.png"
     },
     "plugins": [
       "expo-router",
@@ -33,6 +47,12 @@
           "cameraPermission": "Permitir acesso à câmera."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2a56156b-c2a3-425e-af84-d10d8d3bd477"
+      }
+    }
   }
 }
