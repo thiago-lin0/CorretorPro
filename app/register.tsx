@@ -2,6 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import {
   ActivityIndicator,
   Alert,
@@ -18,6 +19,9 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
+=======
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
 import { supabase } from '../lib/supabase';
 
 export default function RegisterScreen() {
@@ -30,6 +34,10 @@ export default function RegisterScreen() {
   const logoImg = require('../assets/images/logo.png');
 
   async function handleRegister() {
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
     if (!name || !schoolName || !email || !password) {
         return Alert.alert("Atenção", "Por favor, preencha todos os campos.");
     }
@@ -71,6 +79,7 @@ export default function RegisterScreen() {
         <Ionicons name="arrow-back" size={24} color="#333" />
       </TouchableOpacity>
 
+<<<<<<< HEAD
       {/* 2. ScrollView permite rolar os campos quando o teclado sobe */}
       <ScrollView 
         contentContainerStyle={styles.scrollContent}
@@ -84,6 +93,14 @@ export default function RegisterScreen() {
               <Text style={styles.title}>Nova Conta</Text>
               <Text style={styles.subtitle}>Cadastre-se para gerenciar suas provas.</Text>
             </View>
+=======
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Image source={logoImg} style={styles.logo} resizeMode="contain" />
+          <Text style={styles.title}>Nova Conta</Text>
+          <Text style={styles.subtitle}>Cadastre-se para gerenciar suas provas.</Text>
+        </View>
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
 
             <View style={styles.form}>
               <Text style={styles.label}>Seu Nome Completo</Text>
@@ -147,11 +164,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F7FA',
   },
+<<<<<<< HEAD
   inner: {
     flex: 1,
     justifyContent: 'center',
   },
   logo: { 
+=======
+    logo: { 
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
     width: 100, 
     height: 100,
   },

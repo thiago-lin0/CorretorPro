@@ -1,6 +1,7 @@
 // app/index.tsx
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import {
   ActivityIndicator,
   Alert,
@@ -17,6 +18,9 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
+=======
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
 import { supabase } from '../lib/supabase';
 
 export default function LoginScreen() {
@@ -43,6 +47,7 @@ export default function LoginScreen() {
   }
 
   return (
+<<<<<<< HEAD
     // 1. KeyboardAvoidingView: Ajusta a tela conforme o teclado sobe
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -63,6 +68,15 @@ export default function LoginScreen() {
               <Text style={styles.logoText}>AVALIADOR<Text style={styles.logoBold}> 360</Text></Text>
               <Text style={styles.subtitle}>Inteligência de dados para uma educação de resultados.</Text>
             </View>
+=======
+    <View style={styles.container}>
+      {/* Cabeçalho / Logo */}
+      <View style={styles.header}>
+        <Image source={logoImg} style={styles.logo} resizeMode="contain" />
+        <Text style={styles.logoText}>AVALIADOR<Text style={styles.logoBold}> 360</Text></Text>
+        <Text style={styles.subtitle}>Inteligência de dados para uma educação de resultados.</Text>
+      </View>
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
 
             {/* Formulário */}
             <View style={styles.form}>
@@ -154,7 +168,10 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#334155',
     marginTop: 5,
+<<<<<<< HEAD
     textAlign: 'center',
+=======
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
     paddingHorizontal: 30,
   },
   form: {

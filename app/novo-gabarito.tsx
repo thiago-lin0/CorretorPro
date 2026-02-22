@@ -90,8 +90,13 @@ export default function GestaoProvasScreen() {
     setLoadingDownload(true); 
     setModalDownloadVisible(false);
     try {
+<<<<<<< HEAD
       const downloadUrl = `${API_URL}/gerar-pdf-turma/${idTurma}`;
       const response = await fetch(downloadUrl); 
+=======
+      const downloadUrl = `${API_URL}/gerar-pdf-turma/${idTurma}?id_prova=${provaSelecionadaParaDownload.id_prova}`;
+      const response = await fetch(downloadUrl); // Pre-fetch para segurar o loading
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
       if (!response.ok) throw new Error("Erro ao gerar PDF.");
       await WebBrowser.openBrowserAsync(downloadUrl);
     } catch (error: any) {
@@ -216,7 +221,14 @@ export default function GestaoProvasScreen() {
                 </View>
                 <View style={styles.actions}>
                   <TouchableOpacity onPress={() => { setProvaSelecionadaParaDownload(item); setModalDownloadVisible(true); }}>
+<<<<<<< HEAD
                     <Ionicons name="cloud-download-outline" size={24} color="#003399" style={{ marginRight: 15 }} />
+=======
+                    <Ionicons name="cloud-download-outline" size={24} color="#003399" style={{ marginRight: 12 }} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handlePrepararEdicao(item)}>
+                    <Ionicons name="pencil-outline" size={22} color="#10B981" style={{ marginRight: 12 }} />
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
                   </TouchableOpacity>
                   
                   <TouchableOpacity onPress={() => { 
@@ -355,7 +367,7 @@ const styles = StyleSheet.create({
   cardMateria: { fontSize: 11, color: '#003399', fontWeight: 'bold', marginBottom: 2 },
   cardTurma: { fontSize: 12, color: '#64748B', marginTop: 2 },
   actions: { flexDirection: 'row', alignItems: 'center' },
-  fab: { position: 'absolute', bottom: 30, right: 25, backgroundColor: '#003399', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 4 },
+  fab: { position: 'absolute', bottom: 60, right: 25, zIndex: 10, backgroundColor: '#003399', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 4 },
   overlayLoading: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.8)', justifyContent: 'center', alignItems: 'center', zIndex: 999 },
   loadingText: { marginTop: 10, color: '#003399', fontWeight: 'bold' },
   formHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },

@@ -5,12 +5,12 @@
     "version": "1.0.0",
     "scheme": "avaliador360",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#003399"
     },
     "ios": {
       "bundleIdentifier": "com.thiago.avaliador360",
@@ -23,10 +23,13 @@
     },
     "android": {
       "package": "com.thiago.avaliador360",
+<<<<<<< HEAD
       "softwareKeyboardLayoutMode": "resize",
+=======
+>>>>>>> 9d1bb21580f701a08ffb24ffc1eab71df7003bd0
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
