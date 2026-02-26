@@ -55,7 +55,7 @@ export default function HomeScreen() {
             title="Minhas Provas" 
             bgColor="#F3E5F5" 
             icon={<Ionicons name="grid" size={28} color="#9C27B0" />} 
-            onPress={() => router.push('/novo-gabarito')} 
+            onPress={() => router.push('/gestao-provas')} 
           />
         </View>
 
