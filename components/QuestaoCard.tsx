@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, SIZES } from '../constants/Theme';
 
 interface QuestaoCardProps {
   numero: number;
@@ -19,8 +20,8 @@ export function QuestaoCard({ numero, respostaSelecionada, descritorSelecionado,
           <Text style={styles.txtNum}>{numero}</Text>
         </View>
         <TouchableOpacity style={styles.selectorDescritor} onPress={onPressDescritor}>
-          <Text style={[styles.txtDescritor, !descritorSelecionado && { color: '#AAA' }]}>
-            {descritorSelecionado || "D1-D37"}
+          <Text style={[styles.txtDescritor, !descritorSelecionado && { color: COLORS.textLight }]}>
+            {descritorSelecionado || "Descritor"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -42,15 +43,15 @@ export function QuestaoCard({ numero, respostaSelecionada, descritorSelecionado,
 }
 
 const styles = StyleSheet.create({
-  questaoCard: { backgroundColor: '#F5F7FA', padding: 15, borderRadius: 20, marginBottom: 15 },
+  questaoCard: { backgroundColor: COLORS.borderLight, padding: 15, borderRadius: SIZES.radiusLarge, marginBottom: 15 },
   questaoTopo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 },
-  badgeNum: { width: 30, height: 30, backgroundColor: '#003399', borderRadius: 8, justifyContent: 'center', alignItems: 'center' },
-  txtNum: { color: '#FFF', fontWeight: 'bold' },
-  selectorDescritor: { flex: 1, marginLeft: 15, backgroundColor: '#FFF', padding: 10, borderRadius: 10, alignItems: 'center', borderWidth: 1, borderColor: '#DDE3ED' },
-  txtDescritor: { fontSize: 13, fontWeight: 'bold', color: '#003399' },
+  badgeNum: { width: 30, height: 30, backgroundColor: COLORS.primary, borderRadius: SIZES.radiusSmall, justifyContent: 'center', alignItems: 'center' },
+  txtNum: { color: COLORS.surface, fontWeight: 'bold' },
+  selectorDescritor: { flex: 1, marginLeft: 15, backgroundColor: COLORS.surface, padding: 10, borderRadius: SIZES.radiusMedium, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
+  txtDescritor: { fontSize: 13, fontWeight: 'bold', color: COLORS.primary },
   altsContainer: { flexDirection: 'row', justifyContent: 'space-between' },
-  btnAlt: { width: '22%', height: 45, borderRadius: 12, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#DDE3ED' },
-  btnAltActive: { backgroundColor: '#003399', borderColor: '#003399' },
-  txtAlt: { fontWeight: '800', color: '#778899', fontSize: 16 },
-  txtAltActive: { color: '#FFF' },
+  btnAlt: { width: '22%', height: 45, borderRadius: SIZES.radiusMedium, backgroundColor: COLORS.surface, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
+  btnAltActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
+  txtAlt: { fontWeight: '800', color: COLORS.textSecondary, fontSize: 16 },
+  txtAltActive: { color: COLORS.surface },
 });

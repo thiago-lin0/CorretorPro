@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { COLORS, SIZES } from '../constants/Theme';
 
 // --- MODAL TURMA ---
 export function ModalNovaTurma({ visible, onClose, onSave, serie, setSerie, turmaLetra, setTurmaLetra, turno, setTurno }: any) {
@@ -111,31 +112,148 @@ export function ModalGerenciarAluno(props: any) {
 
 // Estilos apenas dos Modais
 const styles = StyleSheet.create({
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 25 },
-  modalContent: { backgroundColor: '#FFF', borderRadius: 30, padding: 30 },
-  modalTitle: { fontSize: 20, fontWeight: 'bold', color: '#003399', marginBottom: 20 },
-  input: { backgroundColor: '#F5F7FA', padding: 15, borderRadius: 15, marginBottom: 15 },
-  label: { fontWeight: 'bold', marginBottom: 10, color: '#666', fontSize: 13 },
-  btnSave: { backgroundColor: '#1E3A8A', padding: 18, borderRadius: 18, alignItems: 'center', marginBottom: 15 },
-  btnTextSave: { color: '#FFF', fontWeight: 'bold' },
-  cancelText: { textAlign: 'center', color: '#AAA' },
-  shiftContainer: { flexDirection: 'row', gap: 10, marginBottom: 20 },
-  shiftBtn: { flex: 1, padding: 12, backgroundColor: '#F5F7FA', borderRadius: 10, alignItems: 'center' },
-  shiftBtnActive: { backgroundColor: '#EBF0FF', borderWidth: 1, borderColor: '#1E3A8A' },
-  shiftBtnText: { color: '#666', fontWeight: 'bold' },
-  shiftBtnTextActive: { color: '#003399' },
-  modeSelector: { flexDirection: 'row', backgroundColor: '#F5F7FA', borderRadius: 12, padding: 4, marginBottom: 25 },
-  modeBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-  modeBtnActive: { backgroundColor: '#FFF', elevation: 2 },
-  modeBtnText: { color: '#AAA', fontWeight: 'bold', fontSize: 12 },
-  modeBtnTextActive: { color: '#1E3A8A' },
-  dropdownButton: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F5F7FA', padding: 15, borderRadius: 15 },
-  dropdownButtonActive: { borderWidth: 1, borderColor: '#1E3A8A' },
-  dropdownButtonText: { color: '#333' },
-  dropdownList: { backgroundColor: '#FFF', borderRadius: 15, marginTop: 5, elevation: 4 },
-  dropdownItem: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#F0F5FF' },
-  dropdownItemText: { color: '#555' },
-  infoBox: { flexDirection: 'row', backgroundColor: '#EBF0FF', padding: 15, borderRadius: 15, marginBottom: 20, alignItems: 'center' },
-  infoText: { color: '#003399', fontSize: 12, flex: 1, marginLeft: 10 },
-  btnExcelLarge: { backgroundColor: '#4CAF50', flexDirection: 'row', padding: 20, borderRadius: 18, alignItems: 'center', justifyContent: 'center' }
+  modalOverlay: { 
+    flex: 1, 
+    backgroundColor: COLORS.overlay, 
+    justifyContent: 'center', 
+    padding: 25 
+  },
+  modalContent: { 
+    backgroundColor: COLORS.surface, 
+    borderRadius: 30, // Mantive 30 aqui pois é um modal bem arredondado
+    padding: 30 
+  },
+  modalTitle: { 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    color: COLORS.primary, 
+    marginBottom: 20 
+  },
+  input: { 
+    backgroundColor: COLORS.background, 
+    padding: 15, 
+    borderRadius: SIZES.radiusMedium, 
+    marginBottom: 15 
+  },
+  label: { 
+    fontWeight: 'bold', 
+    marginBottom: 10, 
+    color: COLORS.textSecondary, 
+    fontSize: 13 
+  },
+  btnSave: { 
+    backgroundColor: COLORS.primaryDark, 
+    padding: 18, 
+    borderRadius: 18, 
+    alignItems: 'center', 
+    marginBottom: 15 
+  },
+  btnTextSave: { 
+    color: COLORS.surface, 
+    fontWeight: 'bold' 
+  },
+  cancelText: { 
+    textAlign: 'center', 
+    color: COLORS.textLight 
+  },
+  shiftContainer: { 
+    flexDirection: 'row', 
+    gap: 10, 
+    marginBottom: 20 
+  },
+  shiftBtn: { 
+    flex: 1, 
+    padding: 12, 
+    backgroundColor: COLORS.background, 
+    borderRadius: SIZES.radiusSmall, 
+    alignItems: 'center' 
+  },
+  shiftBtnActive: { 
+    backgroundColor: COLORS.borderLight, 
+    borderWidth: 1, 
+    borderColor: COLORS.primaryDark 
+  },
+  shiftBtnText: { 
+    color: COLORS.textSecondary, 
+    fontWeight: 'bold' 
+  },
+  shiftBtnTextActive: { 
+    color: COLORS.primary 
+  },
+  modeSelector: { 
+    flexDirection: 'row', 
+    backgroundColor: COLORS.background, 
+    borderRadius: SIZES.radiusMedium, 
+    padding: 4, 
+    marginBottom: 25 
+  },
+  modeBtn: { 
+    flex: 1, 
+    paddingVertical: 10, 
+    alignItems: 'center', 
+    borderRadius: SIZES.radiusSmall 
+  },
+  modeBtnActive: { 
+    backgroundColor: COLORS.surface, 
+    elevation: 2 
+  },
+  modeBtnText: { 
+    color: COLORS.textLight, 
+    fontWeight: 'bold', 
+    fontSize: 12 
+  },
+  modeBtnTextActive: { 
+    color: COLORS.primaryDark 
+  },
+  dropdownButton: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    backgroundColor: COLORS.background, 
+    padding: 15, 
+    borderRadius: SIZES.radiusMedium 
+  },
+  dropdownButtonActive: { 
+    borderWidth: 1, 
+    borderColor: COLORS.primaryDark 
+  },
+  dropdownButtonText: { 
+    color: COLORS.textPrimary 
+  },
+  dropdownList: { 
+    backgroundColor: COLORS.surface, 
+    borderRadius: SIZES.radiusMedium, 
+    marginTop: 5, 
+    elevation: 4 
+  },
+  dropdownItem: { 
+    padding: 15, 
+    borderBottomWidth: 1, 
+    borderBottomColor: COLORS.borderLight 
+  },
+  dropdownItemText: { 
+    color: COLORS.textSecondary 
+  },
+  infoBox: { 
+    flexDirection: 'row', 
+    backgroundColor: COLORS.borderLight, 
+    padding: 15, 
+    borderRadius: SIZES.radiusMedium, 
+    marginBottom: 20, 
+    alignItems: 'center' 
+  },
+  infoText: { 
+    color: COLORS.primary, 
+    fontSize: 12, 
+    flex: 1, 
+    marginLeft: 10 
+  },
+  btnExcelLarge: { 
+    backgroundColor: COLORS.successDark, // Aquele verde bonito
+    flexDirection: 'row', 
+    padding: 20, 
+    borderRadius: 18, 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  }
 });

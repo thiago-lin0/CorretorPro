@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../constants/Theme';
 import { ScannedResult } from '../hooks/useEscanearGabarito';
 
 // --- OVERLAY DE LOADING ---
@@ -37,14 +38,14 @@ export function ScannerResultCard({ result, onSave, onDiscard }: ScannerResultCa
 }
 
 const styles = StyleSheet.create({
-  loadingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
-  loadingText: { color: '#FFF', marginTop: 15, fontSize: 16, fontWeight: 'bold' },
-  cardResult: { width: '90%', backgroundColor: '#FFF', borderRadius: 25, padding: 20, elevation: 10 },
+  loadingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: COLORS.overlay, justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
+  loadingText: { color: COLORS.surface, marginTop: 15, fontSize: 16, fontWeight: 'bold' },
+  cardResult: { width: '90%', backgroundColor: COLORS.surface, borderRadius: 25, padding: 20, elevation: 10 },
   cardInfo: { marginBottom: 15 },
-  cardName: { fontSize: 18, fontWeight: 'bold', color: '#1E293B' },
-  cardScore: { fontSize: 16, color: '#15803D', fontWeight: 'bold', marginTop: 5 },
-  btnSave: { backgroundColor: '#2B428C', padding: 15, borderRadius: 12, alignItems: 'center' },
-  btnSaveTxt: { color: '#FFF', fontWeight: 'bold' },
+  cardName: { fontSize: 18, fontWeight: 'bold', color: COLORS.textPrimary },
+  cardScore: { fontSize: 16, color: COLORS.success, fontWeight: 'bold', marginTop: 5 },
+  btnSave: { backgroundColor: COLORS.primaryDark, padding: 15, borderRadius: 12, alignItems: 'center' },
+  btnSaveTxt: { color: COLORS.surface, fontWeight: 'bold' },
   btnDiscard: { marginTop: 15, alignItems: 'center' },
-  btnDiscardTxt: { color: '#64748B', fontSize: 14 }
+  btnDiscardTxt: { color: COLORS.textSecondary, fontSize: 14 }
 });

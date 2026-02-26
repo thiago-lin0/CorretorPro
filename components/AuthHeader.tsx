@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { COLORS } from '../constants/Theme';
 
 export function AuthHeader() {
   const logoImg = require('../assets/images/logo.png');
@@ -20,7 +21,7 @@ export function AuthHeader() {
 const styles = StyleSheet.create({
   header: { alignItems: 'center', marginBottom: 40 },
   logo: { width: 120, height: 120, marginBottom: 10 },
-  logoText: { fontSize: 32, color: '#1E293B', fontWeight: '300' },
-  logoBold: { fontWeight: 'bold', color: '#2B428C' },
-  subtitle: { fontSize: 12, color: '#64748B', marginTop: 8, textAlign: 'center', paddingHorizontal: 20, lineHeight: 18 },
+  logoText: { fontSize: 32, color: COLORS.textPrimary, fontWeight: '300' },
+  logoBold: { fontWeight: 'bold', color: COLORS.primary },
+  subtitle: { fontSize: 12, color: COLORS.textSecondary, marginTop: 8, textAlign: 'center', paddingHorizontal: 20, lineHeight: 18 },
 });

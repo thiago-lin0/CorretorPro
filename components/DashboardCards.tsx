@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, SIZES } from '../constants/Theme';
 
 // --- CARD QUADRADO (Turmas / Provas) ---
 interface SquareCardProps {
@@ -69,16 +70,30 @@ export function WideCard({ title, subtitle, icon, bgColor, onPress, style }: Wid
 
 // Estilos dos Cards exportados para cá
 const styles = StyleSheet.create({
-  squareCard: { backgroundColor: '#FFF', width: '48%', paddingVertical: 25, borderRadius: 25, alignItems: 'center', elevation: 4, shadowColor: '#000', shadowOpacity: 0.05 },
+  squareCard: { backgroundColor: COLORS.surface, width: '48%', paddingVertical: 25, borderRadius: 25, alignItems: 'center', elevation: 4, shadowColor: '#000', shadowOpacity: 0.05 },
   iconCircle: { width: 55, height: 55, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginBottom: 15 },
-  squareCardText: { fontSize: 14, fontWeight: 'bold', color: '#333' },
-  heroCard: { backgroundColor: '#1E3A8A', borderRadius: 25, padding: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, elevation: 8, shadowColor: '#1E3A8A', shadowOpacity: 0.3 },
-  heroTitle: { color: '#FFF', fontSize: 22, fontWeight: 'bold' },
-  heroSubtitle: { color: '#A3B3E5', fontSize: 14, marginTop: 4 },
-  heroIconBox: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 15, borderRadius: 20 },
-  wideCard: { backgroundColor: '#FFF', borderRadius: 22, padding: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', elevation: 3, shadowColor: '#000', shadowOpacity: 0.05 },
-  wideCardLeft: { flexDirection: 'row', alignItems: 'center' },
-  iconCircleSmall: { width: 45, height: 45, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
-  wideCardTitle: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  wideCardSubtitle: { fontSize: 12, color: '#888' },
+  squareCardText: { fontSize: 14, fontWeight: 'bold', color: COLORS.textPrimary },
+  heroCard: { backgroundColor: COLORS.primaryDark, borderRadius: 25, padding: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SIZES.large, elevation: 8, shadowColor: COLORS.primaryDark, shadowOpacity: 0.3 },
+  heroTitle: { color: COLORS.surface, fontSize: 22, fontWeight: 'bold' },
+  heroSubtitle: { color: COLORS.textSecondary, fontSize: 14, marginTop: 4 },
+  heroIconBox: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 15, borderRadius: SIZES.radiusSmall },
+  wideCard: { backgroundColor: COLORS.surface, borderRadius: 22, padding: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', elevation: 3, shadowColor: '#000', shadowOpacity: 0.05 },
+  wideCardLeft: {flexDirection: 'row',alignItems: 'center',flex: 1},
+  iconCircleSmall: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SIZES.small,
+  },
+  wideCardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.textPrimary, // Ou COLORS.textPrimary se já importou o tema
+  },
+  wideCardSubtitle: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
 });
