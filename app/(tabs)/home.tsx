@@ -1,60 +1,14 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { HeroCard, SquareCard, WideCard } from '../../components/DashboardCards';
+import { useProfessorProfile } from '../../hooks/useProfessorProfile';
 import { supabase } from '../../lib/supabase';
 
-// Tipagem rigorosa para evitar erros de renderização
-type ProfessorData = {
-  nome: string;
-  tb_escola: {
-    nome: string;
-  } | null;
-};
-
 export default function HomeScreen() {
-  const [loading, setLoading] = useState(true);
-  const [professor, setProfessor] = useState<ProfessorData | null>(null);
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  async function fetchProfile() {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace('/');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('tb_professor')
-        .select(`
-          nome,
-          tb_escola (
-            nome
-          )
-        `)
-        .eq('auth_id', user.id)
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        const escolaRef = Array.isArray(data.tb_escola) ? data.tb_escola[0] : data.tb_escola;
-        
-        setProfessor({
-          nome: data.nome,
-          tb_escola: escolaRef
-        } as ProfessorData);
-      }
-    } catch (error) {
-      console.log("Erro ao carregar perfil:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  // 1. A lógica pesada ficou toda abstraída no Hook!
+  const { professor, loading } = useProfessorProfile();
 
   if (loading) {
     return (
@@ -66,6 +20,11 @@ export default function HomeScreen() {
 
   const primeiroNome = professor?.nome?.split(' ')[0] || 'Professor';
   const nomeEscola = professor?.tb_escola?.nome || 'Escola não vinculada';
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.replace('/');
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -79,90 +38,59 @@ export default function HomeScreen() {
             <Text style={styles.title}>Painel de Controle</Text>
             <Text style={styles.schoolSub}>🎓 {nomeEscola}</Text>
           </View>
-          <TouchableOpacity 
-            onPress={() => supabase.auth.signOut().then(() => router.replace('/'))} 
-            style={styles.logoutButton}
-          >
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
             <Ionicons name="log-out-outline" size={22} color="#FF3B30" />
           </TouchableOpacity>
         </View>
 
         {/* GRID DE BOTÕES */}
         <View style={styles.gridContainer}>
-          <TouchableOpacity 
-            style={styles.squareCard}
-            onPress={() => router.push('/turmaEAlunos')}
-          >
-            <View style={[styles.iconCircle, { backgroundColor: '#E3F2FD' }]}>
-              <Ionicons name="people" size={28} color="#2196F3" />
-            </View>
-            <Text style={styles.squareCardText}>Turmas & Alunos</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.squareCard}
-            onPress={() => router.push('/novo-gabarito')}
-          >
-            <View style={[styles.iconCircle, { backgroundColor: '#F3E5F5' }]}>
-              <Ionicons name="grid" size={28} color="#9C27B0" />
-            </View>
-            <Text style={styles.squareCardText}>Minhas Provas</Text>
-          </TouchableOpacity>
+          <SquareCard 
+            title="Turmas & Alunos" 
+            bgColor="#E3F2FD" 
+            icon={<Ionicons name="people" size={28} color="#2196F3" />} 
+            onPress={() => router.push('/turmaEAlunos')} 
+          />
+          <SquareCard 
+            title="Minhas Provas" 
+            bgColor="#F3E5F5" 
+            icon={<Ionicons name="grid" size={28} color="#9C27B0" />} 
+            onPress={() => router.push('/novo-gabarito')} 
+          />
         </View>
 
         {/* CARD DA CÂMERA */}
-        <TouchableOpacity 
-          style={styles.heroCard}
-          onPress={() => router.push('/escanear-gabarito')}
-        >
-          <View>
-            <Text style={styles.heroTitle}>Ler Gabaritos</Text>
-            <Text style={styles.heroSubtitle}>Corrigir via Câmera</Text>
-          </View>
-          <View style={styles.heroIconBox}>
-            <Ionicons name="camera" size={32} color="#FFF" />
-          </View>
-        </TouchableOpacity>
+        <HeroCard 
+          title="Ler Gabaritos" 
+          subtitle="Corrigir via Câmera" 
+          iconName="camera" 
+          onPress={() => router.push('/escanear-gabarito')} 
+        />
 
-        {/* --- NOVO: BOTÃO DE HISTÓRICO --- */}
-        <TouchableOpacity 
-          style={[styles.wideCard, { marginBottom: 15 }]} 
-          onPress={() => router.push('/historico')}
-        >
-          <View style={styles.wideCardLeft}>
-            <View style={[styles.iconCircleSmall, { backgroundColor: '#E8EAF6' }]}>
-              <Ionicons name="time" size={24} color="#3F51B5" />
-            </View>
-            <View>
-              <Text style={styles.wideCardTitle}>Histórico de Correções</Text>
-              <Text style={styles.wideCardSubtitle}>Últimas provas digitalizadas</Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#CCC" />
-        </TouchableOpacity>
+        {/* LISTA DE OPÇÕES (Cards Largos) */}
+        <WideCard 
+          title="Histórico de Correções" 
+          subtitle="Últimas provas digitalizadas" 
+          bgColor="#E8EAF6" 
+          icon={<Ionicons name="time" size={24} color="#3F51B5" />} 
+          onPress={() => router.push('/historico')} 
+          style={{ marginBottom: 15 }}
+        />
 
-        {/* CARD DE RELATÓRIOS */}
-        <TouchableOpacity 
-          style={styles.wideCard}
-          onPress={() => router.push('/relatorios')}
-          >
-          <View style={styles.wideCardLeft}>
-            <View style={[styles.iconCircleSmall, { backgroundColor: '#E8F5E9' }]}>
-              <MaterialCommunityIcons name="file-excel" size={24} color="#4CAF50" />
-            </View>
-            <View>
-              <Text style={styles.wideCardTitle}>Relatórios XLSX</Text>
-              <Text style={styles.wideCardSubtitle}>Consolidados e Gráficos</Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#CCC" />
-        </TouchableOpacity>
+        <WideCard 
+          title="Relatórios XLSX" 
+          subtitle="Consolidados e Gráficos" 
+          bgColor="#E8F5E9" 
+          icon={<MaterialCommunityIcons name="file-excel" size={24} color="#4CAF50" />} 
+          onPress={() => router.push('/relatorios')} 
+        />
 
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+// Apenas estilos estruturais da tela principal
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -173,16 +101,4 @@ const styles = StyleSheet.create({
   schoolSub: { fontSize: 13, color: '#10B981', fontWeight: '700', marginTop: 4 },
   logoutButton: { backgroundColor: '#FFF', padding: 10, borderRadius: 50, elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5 },
   gridContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-  squareCard: { backgroundColor: '#FFF', width: '48%', paddingVertical: 25, borderRadius: 25, alignItems: 'center', elevation: 4, shadowColor: '#000', shadowOpacity: 0.05 },
-  iconCircle: { width: 55, height: 55, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginBottom: 15 },
-  squareCardText: { fontSize: 14, fontWeight: 'bold', color: '#333' },
-  heroCard: { backgroundColor: '#1E3A8A', borderRadius: 25, padding: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, elevation: 8, shadowColor: '#1E3A8A', shadowOpacity: 0.3 },
-  heroTitle: { color: '#FFF', fontSize: 22, fontWeight: 'bold' },
-  heroSubtitle: { color: '#A3B3E5', fontSize: 14, marginTop: 4 },
-  heroIconBox: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 15, borderRadius: 20 },
-  wideCard: { backgroundColor: '#FFF', borderRadius: 22, padding: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', elevation: 3, shadowColor: '#000', shadowOpacity: 0.05 },
-  wideCardLeft: { flexDirection: 'row', alignItems: 'center' },
-  iconCircleSmall: { width: 45, height: 45, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
-  wideCardTitle: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  wideCardSubtitle: { fontSize: 12, color: '#888' },
 });

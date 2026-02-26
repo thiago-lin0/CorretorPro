@@ -67,14 +67,14 @@ export default function EscanearGabaritoScreen() {
                     width: foto.width * 0.9, 
                     height: foto.height * 0.8 
                 } }], 
-                { compress: 1.0, format: ImageManipulator.SaveFormat.JPEG }
+                { compress: 1.0, format: ImageManipulator.SaveFormat.PNG }
             );
 
             const formData = new FormData();
             formData.append('file', {
                 uri: manipulada.uri,
-                name: 'scan.jpg',
-                type: 'image/jpeg',
+                name: 'scan.png',
+                type: 'image/png',
             } as any);
 
             const response = await fetch(`${API_URL}/corrigir-prova`, {
